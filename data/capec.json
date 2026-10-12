@@ -1,0 +1,191 @@
+[
+  {
+    "attack_type": "Backdoor",
+    "capec_id": "CAPEC-523",
+    "capec_name": "Malicious Software Implanted",
+    "mapping": "closest",
+    "mapping_note": "CAPEC has no pattern named Backdoor. CAPEC-523 describes malicious software designed to act as a backdoor in a system, but it is framed as a supply-chain attack. Alternatives: CAPEC-442 Infected Software, CAPEC-552 Install Rootkit.",
+    "description": "An adversary gets software onto a system that gives them a hidden way back in later. The software may be built by the adversary or obtained ready-made, and it is placed on the target through some entry point.",
+    "mitigations": [
+      {"text": "Only accept software and firmware updates from the official vendor source, and verify their signatures before installing.", "source": "capec"},
+      {"text": "Inventory the services listening on each device and block unexpected inbound ports at the host or network firewall.", "source": "general"},
+      {"text": "Restrict outbound connections from IoT devices to an allowlist of known destinations so a backdoor cannot call home freely.", "source": "general"}
+    ]
+  },
+  {
+    "attack_type": "DDoS_HTTP",
+    "capec_id": "CAPEC-488",
+    "capec_name": "HTTP Flood",
+    "mapping": "exact",
+    "mapping_note": "",
+    "description": "An adversary floods a web service with legitimate-looking HTTP GET requests inside real sessions, using up application-layer resources so genuine users are denied service. Because the sessions look legitimate, the attack is hard to detect.",
+    "mitigations": [
+      {"text": "Use a third-party DDoS protection provider, which has the resources and expertise to update filtering rules and block HTTP floods quickly.", "source": "capec"},
+      {"text": "Place a load balancer such as nginx in front of the web servers to spread traffic and absorb small-scale floods.", "source": "capec"},
+      {"text": "Make a requesting client solve a challenge before it is allowed to send an HTTP request.", "source": "capec"},
+      {"text": "Apply per-client request rate limits at the web server or reverse proxy.", "source": "general"}
+    ]
+  },
+  {
+    "attack_type": "DDoS_ICMP",
+    "capec_id": "CAPEC-487",
+    "capec_name": "ICMP Flood",
+    "mapping": "exact",
+    "mapping_note": "",
+    "description": "An adversary sends ICMP packets at a high rate, often from many source addresses, to use up the victim's network bandwidth. ICMP is session-less, so the source address is easily spoofed, which makes the true origin hard to find.",
+    "mitigations": [
+      {"text": "Rate-limit or drop ICMP echo requests at the network edge for hosts that do not need to answer them from outside.", "source": "general"},
+      {"text": "Apply ingress filtering so packets with spoofed or impossible source addresses are discarded.", "source": "general"},
+      {"text": "Use upstream traffic scrubbing or the ISP's DDoS protection when the flood exceeds local bandwidth.", "source": "general"}
+    ]
+  },
+  {
+    "attack_type": "DDoS_TCP",
+    "capec_id": "CAPEC-482",
+    "capec_name": "TCP Flood",
+    "mapping": "exact",
+    "mapping_note": "",
+    "description": "An adversary floods a server's port with TCP traffic, often SYN messages, exploiting the fact that the server must keep state for each connection. The aim is to deny legitimate users access to the service.",
+    "mitigations": [
+      {"text": "Monitor incoming packets and look for patterns in the TCP traffic that indicate the network is under attack.", "source": "capec"},
+      {"text": "Rate-limit incoming TCP SYN messages to the target, which gives limited protection while under attack.", "source": "capec"},
+      {"text": "Enable SYN cookies and tune the connection backlog so half-open connections do not exhaust server memory.", "source": "general"}
+    ]
+  },
+  {
+    "attack_type": "DDoS_UDP",
+    "capec_id": "CAPEC-486",
+    "capec_name": "UDP Flood",
+    "mapping": "exact",
+    "mapping_note": "",
+    "description": "An adversary floods the target with UDP packets to consume network bandwidth. Firewalls that open a state entry per UDP connection can also be overwhelmed, and services such as DNS or VoIP can be targeted. UDP is session-less, so the source is easily spoofed.",
+    "mitigations": [
+      {"text": "Disable or firewall off UDP services that are not needed, so there is nothing for the flood to reach.", "source": "general"},
+      {"text": "Rate-limit UDP traffic per source and per destination port at the network edge.", "source": "general"},
+      {"text": "Size firewall state tables for peak load, or use stateless filtering for UDP, so the firewall itself is not exhausted.", "source": "general"},
+      {"text": "Use upstream scrubbing or ISP DDoS protection for floods that exceed local bandwidth.", "source": "general"}
+    ]
+  },
+  {
+    "attack_type": "Fingerprinting",
+    "capec_id": "CAPEC-224",
+    "capec_name": "Fingerprinting",
+    "mapping": "exact",
+    "mapping_note": "Related patterns: CAPEC-312 Active OS Fingerprinting, CAPEC-313 Passive OS Fingerprinting, CAPEC-541 Application Fingerprinting, CAPEC-170 Web Application Fingerprinting.",
+    "description": "An adversary sends probes to a target and compares how it responds against known signatures, in order to work out the operating system, software and versions in use. This reconnaissance prepares for a more targeted attack.",
+    "mitigations": [
+      {"text": "Remove or genericise version banners and server headers so responses reveal as little as possible.", "source": "general"},
+      {"text": "Block probe traffic that no legitimate client needs, and alert on repeated unusual probe patterns from one source.", "source": "general"},
+      {"text": "Keep systems patched, so that even a successful fingerprint finds no known vulnerable version.", "source": "general"}
+    ]
+  },
+  {
+    "attack_type": "MITM",
+    "capec_id": "CAPEC-94",
+    "capec_name": "Adversary in the Middle (AiTM)",
+    "mapping": "exact",
+    "mapping_note": "Mitigations come from MITRE ATT&CK Adversary-in-the-Middle (ICS technique T0830), because the CAPEC entry itself lists none.",
+    "description": "An adversary places themself in the communication channel between two components, usually a client and a server, so that data flows through them. They can observe it or alter it before passing it on, and neither side is aware. Unlike pure sniffing, the traffic is often modified.",
+    "mitigations": [
+      {"text": "Limit access to network infrastructure and resources that can be used to reshape traffic and create an in-the-middle position.", "source": "attack"},
+      {"text": "Authenticate communications so tampered messages can be detected, including protocols such as DNS that are used to redirect traffic.", "source": "attack"},
+      {"text": "Disable unnecessary legacy network protocols that can be abused for interception.", "source": "attack"},
+      {"text": "Prefer challenge-response authentication that does not send credentials directly over the network.", "source": "attack"},
+      {"text": "Monitor network traffic for anomalies associated with interception, such as unexpected ARP or address changes.", "source": "attack"}
+    ]
+  },
+  {
+    "attack_type": "Password",
+    "capec_id": "CAPEC-49",
+    "capec_name": "Password Brute Forcing",
+    "mapping": "exact",
+    "mapping_note": "The dataset's Password attack is a login-guessing tool, which also fits CAPEC-16 Dictionary-based Password Attack.",
+    "description": "An adversary tries many possible values for a password until one works. Systems are especially exposed when they have no password throttling and no strong password policy.",
+    "mitigations": [
+      {"text": "Implement password throttling, such as locking the account after several failed attempts or adding increasing delays between attempts.", "source": "capec"},
+      {"text": "Enforce a strong password policy and change default credentials on all IoT devices.", "source": "general"},
+      {"text": "Add multi-factor authentication where the device or service supports it.", "source": "general"},
+      {"text": "Alert on many failed logins from one source address in a short time.", "source": "general"}
+    ]
+  },
+  {
+    "attack_type": "Port_Scanning",
+    "capec_id": "CAPEC-300",
+    "capec_name": "Port Scanning",
+    "mapping": "exact",
+    "mapping_note": "Related patterns: CAPEC-287 TCP SYN Scan, CAPEC-301 TCP Connect Scan, CAPEC-302 TCP FIN Scan, CAPEC-308 UDP Scan.",
+    "description": "An adversary probes a target's ports to find out which are open and which services are listening. The results show where an attack could be aimed.",
+    "mitigations": [
+      {"text": "Close or firewall every port and service that is not required, so a scan finds little.", "source": "general"},
+      {"text": "Detect scans by alerting on one source touching many ports or hosts in a short time, and block that source temporarily.", "source": "general"},
+      {"text": "Segment IoT devices on their own network so a scanner on one segment cannot reach all devices.", "source": "general"}
+    ]
+  },
+  {
+    "attack_type": "Ransomware",
+    "capec_id": "ATT&CK T1486",
+    "capec_name": "Data Encrypted for Impact",
+    "mapping": "none_in_capec",
+    "mapping_note": "CAPEC has no ransomware pattern. This entry uses MITRE ATT&CK T1486 instead. The Edge-IIoTset Ransomware class is traffic from a ransomware-style attack, so network-level evidence is limited.",
+    "description": "An adversary encrypts data on target systems, or on many systems across a network, to cut off access to them and withholds the decryption key, often to demand payment. The malware may spread across the network using other techniques.",
+    "mitigations": [
+      {"text": "Use endpoint behaviour-prevention tools that block mass file-encryption activity.", "source": "attack"},
+      {"text": "Keep regular backups that are stored offline or otherwise protected from the compromised systems, and test restoring them.", "source": "attack"},
+      {"text": "Isolate affected hosts from the network immediately to stop the spread, and restrict file shares and administrative accounts.", "source": "general"}
+    ]
+  },
+  {
+    "attack_type": "SQL_injection",
+    "capec_id": "CAPEC-66",
+    "capec_name": "SQL Injection",
+    "mapping": "exact",
+    "mapping_note": "",
+    "description": "An adversary crafts input so that the SQL statement built by the application does something other than what was intended. This lets them talk to the database directly, reading, adding or changing data, and it results from failing to validate input.",
+    "mitigations": [
+      {"text": "Apply strong input validation to everything the user controls, filtering illegal characters and SQL content. This is still needed with stored procedures if the final query is built dynamically.", "source": "capec"},
+      {"text": "Use custom error pages so attackers cannot learn about the queries from descriptive database error messages.", "source": "capec"},
+      {"text": "Use parameterised queries (prepared statements) instead of building SQL by joining strings.", "source": "general"},
+      {"text": "Run the application's database account with the least privileges it needs.", "source": "general"}
+    ]
+  },
+  {
+    "attack_type": "Uploading",
+    "capec_id": "CAPEC-650",
+    "capec_name": "Upload a Web Shell to a Web Server",
+    "mapping": "closest",
+    "mapping_note": "CAPEC has no generic malicious-upload pattern. CAPEC-650 fits an attacker uploading an executable file to a web server.",
+    "description": "By exploiting insufficient permissions, an adversary uploads a web shell to a web server in a way that lets it be executed remotely. The shell acts as a gateway to the server and may run at the web server's permission level.",
+    "mitigations": [
+      {"text": "Keep the web server fully patched against known vulnerabilities.", "source": "capec"},
+      {"text": "Use least-privilege file permissions on directories from which files can be executed, and control their contents with an allowlist.", "source": "capec"},
+      {"text": "Validate uploaded file types and contents, store uploads outside the web root, and never execute uploaded files.", "source": "general"}
+    ]
+  },
+  {
+    "attack_type": "Vulnerability_scanner",
+    "capec_id": "CAPEC-310",
+    "capec_name": "Scanning for Vulnerable Software",
+    "mapping": "exact",
+    "mapping_note": "",
+    "description": "An adversary scans a target to find software or services with known vulnerabilities, so they can pick an exploit. It is automated and usually generates many requests to many paths.",
+    "mitigations": [
+      {"text": "Patch and update software promptly so that scanners find no known vulnerable versions.", "source": "general"},
+      {"text": "Remove or hide services and admin interfaces that do not need to be reachable, and limit what the web server reveals about itself.", "source": "general"},
+      {"text": "Detect scanner behaviour such as bursts of requests for many different paths, and rate-limit or block the source.", "source": "general"}
+    ]
+  },
+  {
+    "attack_type": "XSS",
+    "capec_id": "CAPEC-63",
+    "capec_name": "Cross-Site Scripting (XSS)",
+    "mapping": "exact",
+    "mapping_note": "Sub-patterns: CAPEC-591 Reflected XSS, CAPEC-592 Stored XSS, CAPEC-588 DOM-Based XSS.",
+    "description": "An adversary embeds malicious scripts in content that is served to web browsers, so that the victim's browser runs the script with the user's privileges. The attacks are very hard for an end user to detect.",
+    "mitigations": [
+      {"text": "Ensure all content delivered to the client is sanitised against an acceptable content specification.", "source": "capec"},
+      {"text": "Perform input validation and output validation or encoding for all remote content.", "source": "capec"},
+      {"text": "Enforce strict type, character and encoding rules, and bind session tokens to the specific host.", "source": "capec"},
+      {"text": "Keep browsers, web servers and plug-ins patched, since many XSS vulnerabilities are fixed in updates.", "source": "capec"}
+    ]
+  }
+]

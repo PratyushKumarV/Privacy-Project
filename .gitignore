@@ -1,0 +1,30 @@
+# ---- Python virtual environment (huge, rebuilt with pip install) ----
+.venv/
+venv/
+
+# ---- Python cache files created automatically ----
+__pycache__/
+*.pyc
+
+# ---- Trained models (hundreds of MB; rebuilt with train_classifier.py and robustness.py) ----
+models/
+
+# ---- Vector database (rebuilt with build_index.py and build_kb.py) ----
+chroma_db/
+
+# ---- Dataset files (too large for Git; download from Kaggle) ----
+# data/capec.json is NOT listed here, so it stays tracked.
+data/*.csv
+*.zip
+
+# ---- Generated results (rebuilt by the evaluation scripts) ----
+outputs/
+
+# ---- Editor and OS clutter ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ---- Secrets, in case you ever add an API key or token ----
+.env
